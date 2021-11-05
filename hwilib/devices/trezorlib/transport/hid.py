@@ -131,19 +131,22 @@ class HidTransport(ProtocolBasedTransport):
 
     @classmethod
     def enumerate(cls, debug: bool = False, usb_ids: Set[Tuple[int, int]] = {DEV_TREZOR1}) -> Iterable["HidTransport"]:
-        devices = []
-        for dev in hid.enumerate(0, 0):
-            usb_id = (dev["vendor_id"], dev["product_id"])
-            if usb_id not in usb_ids:
-                continue
-            if debug:
-                if not is_debuglink(dev):
-                    continue
-            else:
-                if not is_wirelink(dev):
-                    continue
-            devices.append(HidTransport(dev))
-        return devices
+        # HID can crash on mac. So disable it.
+        return []
+
+        # devices = []
+        # for dev in hid.enumerate(0, 0):
+        #     usb_id = (dev["vendor_id"], dev["product_id"])
+        #     if usb_id not in usb_ids:
+        #         continue
+        #     if debug:
+        #         if not is_debuglink(dev):
+        #             continue
+        #     else:
+        #         if not is_wirelink(dev):
+        #             continue
+        #     devices.append(HidTransport(dev))
+        # return devices
 
     def find_debug(self) -> "HidTransport":
         # For v1 protocol, find debug USB interface for the same serial number
